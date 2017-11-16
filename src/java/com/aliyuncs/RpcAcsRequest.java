@@ -116,14 +116,14 @@ public abstract class RpcAcsRequest<T extends AcsResponse> extends AcsRequest<T>
 
     @Override
     public HttpRequest signRequest(ISigner signer, AlibabaCloudCredentials credentials, FormatType format, ProductDomain domain)
-        throws InvalidKeyException, IllegalStateException, UnsupportedEncodingException {
+            throws InvalidKeyException, IllegalStateException, UnsupportedEncodingException {
         Map<String, String> imutableMap = new HashMap<String, String>(this.getQueryParameters());
         if (null != signer && null != credentials) {
             String accessKeyId = credentials.getAccessKeyId();
             String accessSecret = credentials.getAccessKeySecret();
             if (credentials instanceof BasicSessionCredentials) {
-                this.putQueryParameter("SecurityToken", ((BasicSessionCredentials)credentials).getSessionToken());
-            }           
+                this.putQueryParameter("SecurityToken", ((BasicSessionCredentials) credentials).getSessionToken());
+            }
             imutableMap = this.composer.refreshSignParameters(this.getQueryParameters(), signer, accessKeyId, format);
             imutableMap.put("RegionId", getRegionId());
             Map<String, String> paramsToSign = new HashMap<String, String>(imutableMap);
@@ -134,7 +134,7 @@ public abstract class RpcAcsRequest<T extends AcsResponse> extends AcsRequest<T>
                 paramsToSign.putAll(formParams);
             }
             String strToSign = this.composer.composeStringToSign(this.getMethod(), null, signer, paramsToSign, null,
-                null);
+                    null);
             String signature = signer.signString(strToSign, accessSecret + "&");
             imutableMap.put("Signature", signature);
         }
